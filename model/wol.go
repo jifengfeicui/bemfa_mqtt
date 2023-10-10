@@ -4,6 +4,7 @@ import (
 	"bafa/Server"
 	"bafa/global"
 	"bafa/util"
+	"fmt"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/go-ini/ini"
 )
@@ -25,4 +26,14 @@ func (w *WolTopic) MessageHandler(client mqtt.Client, msg mqtt.Message) {
 
 func (w *WolTopic) Connect_mqtt() {
 	util.Connect_mqtt(w.TopicName, w.MessageHandler)
+}
+
+func (w *WolTopic) Verify() error {
+	if !w.Parameter.HasKey("mac") {
+		return fmt.Errorf("缺少mac")
+	}
+	if !w.Parameter.HasKey("broadcast") {
+		return fmt.Errorf("缺少broadcast")
+	}
+	return nil
 }

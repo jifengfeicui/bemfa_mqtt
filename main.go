@@ -3,26 +3,9 @@ package main
 import (
 	"bafa/global"
 	"bafa/model"
+	"bafa/util"
 	"fmt"
-	"time"
 )
-
-func test() {
-
-	topic := model.WolTopic{
-		TopicName: "goTest",
-		Parameter: global.Cfg.Section("goTest"),
-	}
-	topic.Connect_mqtt()
-	block_main()
-}
-
-func block_main() {
-	for {
-		global.Logger.Info("主进程正在运行...")
-		time.Sleep(time.Minute)
-	}
-}
 
 func main() {
 	// 遍历所有部分（sections）
@@ -31,6 +14,7 @@ func main() {
 		if sectionName == "DEFAULT" {
 			continue
 		}
+
 		switch section.Key("struct").String() {
 		case "wol":
 			{
@@ -38,17 +22,18 @@ func main() {
 					TopicName: sectionName,
 					Parameter: section,
 				}
+				err := topic.Verify()
+				if err != nil {
+					global.Logger.Error(err.Error())
+					break
+				}
 				go topic.Connect_mqtt()
 			}
-		case "1":
-			fmt.Println(1)
-		case "2":
-			fmt.Println(2)
-
+		case "test":
+			fmt.Println("test")
 		}
-
 	}
 
 	//阻塞主进程
-	block_main()
+	util.Block_main()
 }
