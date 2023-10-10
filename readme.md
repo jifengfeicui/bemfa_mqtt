@@ -45,9 +45,9 @@ bemfa_client_id = xxxxxxxx
 # 巴法云主题名称 例:ethanpc001
 [ethanpc001]
 # 广播地址
-broadcast = 192.168.1.255 
+broadcast = 192.168.x.255 
 # 设备mac地址
-mac = 00:D8:61:78:4B:13
+mac = xx:xx:xx:xx:xx:xx
 struct = wol
 
 
