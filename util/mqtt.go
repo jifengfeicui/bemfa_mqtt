@@ -9,7 +9,7 @@ import (
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 )
 
-func Connect_mqtt(topic string, messageHandler func(client mqtt.Client, msg mqtt.Message)) {
+func ConnectMqtt(topic string, messageHandler func(client mqtt.Client, msg mqtt.Message)) {
 	// 连接参数
 	//brokerURL := "tcp://bemfa.com:9501"
 	brokerURL := fmt.Sprintf("tcp://%s:%s", global.BemfaBroker, global.BemfaPort)

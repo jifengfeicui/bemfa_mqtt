@@ -14,7 +14,7 @@ type WolTopic struct {
 	Parameter *ini.Section
 }
 
-func (w *WolTopic) MessageHandler(client mqtt.Client, msg mqtt.Message) {
+func (w WolTopic) MessageHandler(_ mqtt.Client, msg mqtt.Message) {
 	msgStr := string(msg.Payload())
 	global.Logger.Info("收到消息: " + msgStr)
 	if msgStr == "on" {
@@ -24,11 +24,11 @@ func (w *WolTopic) MessageHandler(client mqtt.Client, msg mqtt.Message) {
 	}
 }
 
-func (w *WolTopic) Connect_mqtt() {
-	util.Connect_mqtt(w.TopicName, w.MessageHandler)
+func (w WolTopic) ConnectMqtt() {
+	util.ConnectMqtt(w.TopicName, w.MessageHandler)
 }
 
-func (w *WolTopic) Verify() error {
+func (w WolTopic) Verify() error {
 	if !w.Parameter.HasKey("mac") {
 		return fmt.Errorf("缺少mac")
 	}
