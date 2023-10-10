@@ -1,8 +1,7 @@
-package messageHandler
+package Server
 
 import (
 	"bafa/global"
-	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"go.uber.org/zap"
 	"net"
 )
@@ -39,15 +38,4 @@ func Wol(macAddrStr, broadcastAddrStr string) {
 		global.Logger.Error("无法发送Magic Packet:", zap.Error(err))
 	}
 	global.Logger.Info("Magic Packet发送成功！")
-}
-
-func WolMessageHandler(client mqtt.Client, msg mqtt.Message) {
-	msgStr := string(msg.Payload())
-	global.Logger.Info("收到消息: " + msgStr)
-	if msgStr == "on" {
-		section := global.Cfg.Section("goTest")
-		macAddrStr := section.Key("mac").String()
-		broadcastAddrStr := section.Key("broadcast").String()
-		Wol(macAddrStr, broadcastAddrStr)
-	}
 }

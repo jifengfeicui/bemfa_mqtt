@@ -1,8 +1,8 @@
 package model
 
-import "github.com/go-ini/ini"
+import mqtt "github.com/eclipse/paho.mqtt.golang"
 
-type Topic struct {
-	TopicName string
-	Parameter []*ini.Section
+type Topic interface {
+	Connect_mqtt()
+	MessageHandler(client mqtt.Client, msg mqtt.Message)
 }
