@@ -3,7 +3,7 @@ package main
 import (
 	"bafa/global"
 	"fmt"
-	"log"
+	"go.uber.org/zap"
 	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
@@ -28,25 +28,19 @@ func Connect_mqtt(topic string, messageHandler func(client mqtt.Client, msg mqtt
 
 	// 连接到 MQTT 服务器
 	if token := client.Connect(); token.Wait() && token.Error() != nil {
-		log.Fatalf("连接到 MQTT 服务器失败: %v", token.Error())
+		global.Logger.Error("连接到 MQTT 服务器失败", zap.Error(token.Error()))
 		return
 	}
 
 	// 订阅主题
 	if token := client.Subscribe(topic, byte(qos), nil); token.Wait() && token.Error() != nil {
-		log.Fatalf("订阅主题失败: %v", token.Error())
+		global.Logger.Error("订阅主题失败", zap.Error(token.Error()))
 		return
 	}
 
-	fmt.Printf("已连接到 MQTT 服务器，订阅主题：%s\n", topic)
-
+	global.Logger.Info("已连接到 MQTT 服务器", zap.String("订阅主题：", topic))
 	// 持续监听消息
 	for {
 		time.Sleep(time.Second)
 	}
 }
-
-//func messageHandler(client mqtt.Client, msg mqtt.Message) {
-//	fmt.Printf("收到消息：%s\n", msg.Payload())
-//	// 在这里处理收到的消息，可以根据需要进行自定义处理
-//}

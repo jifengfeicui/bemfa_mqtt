@@ -1,7 +1,6 @@
 package global
 
 import (
-	"fmt"
 	"github.com/go-ini/ini"
 	"log"
 )
@@ -28,20 +27,20 @@ func init() {
 		log.Fatalf("无法解析 bemfa_port: %v", err)
 	}
 
-	// 遍历所有部分（sections）
-	for _, section := range Cfg.Sections() {
-		sectionName := section.Name()
-		if sectionName == "DEFAULT" {
-			continue
-		}
-		fmt.Printf("topic名称：%s\n", sectionName)
-
-		// 遍历部分中的所有键值对
-		for _, key := range section.Keys() {
-			keyName := key.Name()
-			keyValue := key.String()
-			fmt.Printf("键：%s，值：%s\n", keyName, keyValue)
-		}
-
-	}
+	//// 遍历所有部分（sections）
+	//for _, section := range Cfg.Sections() {
+	//	sectionName := section.Name()
+	//	if sectionName == "DEFAULT" {
+	//		continue
+	//	}
+	//	fmt.Printf("topic名称：%s\n", sectionName)
+	//
+	//	// 遍历部分中的所有键值对
+	//	for _, key := range section.Keys() {
+	//		keyName := key.Name()
+	//		keyValue := key.String()
+	//		fmt.Printf("键：%s，值：%s\n", keyName, keyValue)
+	//	}
+	//
+	//}
 }
