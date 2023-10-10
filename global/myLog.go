@@ -6,7 +6,7 @@ var Logger *zap.Logger
 
 func init() {
 	var err error
-	Logger, err = zap.NewProduction()
+	Logger, err = zap.NewDevelopment()
 	if err != nil {
 		panic(err)
 	}

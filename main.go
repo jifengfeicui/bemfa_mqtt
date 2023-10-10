@@ -8,7 +8,7 @@ import (
 
 func main() {
 	// 读取INI文件
-	topic := "goTest"
+	topic := "ethanpc001"
 	go Connect_mqtt(topic, messageHandler.WolMessageHandler)
 	for {
 		global.Logger.Info("主进程正在运行...")

@@ -2,7 +2,6 @@ package messageHandler
 
 import (
 	"bafa/global"
-	"fmt"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"go.uber.org/zap"
 	"net"
@@ -43,8 +42,9 @@ func Wol(macAddrStr, broadcastAddrStr string) {
 }
 
 func WolMessageHandler(client mqtt.Client, msg mqtt.Message) {
-	fmt.Printf("收到消息：%s\n", msg.Payload())
-	if string(msg.Payload()) == "on" {
+	msgStr := string(msg.Payload())
+	global.Logger.Info("收到消息: " + msgStr)
+	if msgStr == "on" {
 		section := global.Cfg.Section("goTest")
 		macAddrStr := section.Key("mac").String()
 		broadcastAddrStr := section.Key("broadcast").String()

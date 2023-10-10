@@ -38,7 +38,7 @@ func Connect_mqtt(topic string, messageHandler func(client mqtt.Client, msg mqtt
 		return
 	}
 
-	global.Logger.Info("已连接到 MQTT 服务器", zap.String("订阅主题：", topic))
+	global.Logger.Info("已连接到 MQTT 服务器,订阅主题: " + topic)
 	// 持续监听消息
 	for {
 		time.Sleep(time.Second)
