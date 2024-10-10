@@ -92,3 +92,19 @@ struct = wol
    ![img](https://doc.natfrp.com/assets/wol-4-e1910907.png)
 
 6. 如果计算机开启了快速启动，建议关闭快速启动，否则可能造成无法正常唤醒。
+
+## [远程关机WOL配置]
+
+目前仅支持linux,需要提前安装samba-common-bin
+
+```
+apt install samba-common-bin
+```
+
+###  **启用远程关机权限**
+
+你可能还需要为远程用户启用远程关机的权限：
+
+1. 在 Windows 目标计算机上，按下 `Win + R`，输入 `secpol.msc` 并回车。
+2. 导航到 "本地策略" -> "用户权限分配"。
+3. 找到 "从远程系统强制关机" 选项，并确保 `test` 用户或 Administrators 组在列表中。

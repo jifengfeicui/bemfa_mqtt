@@ -28,17 +28,17 @@ func ConnectMqtt(topic string, messageHandler func(client mqtt.Client, msg mqtt.
 
 	// 连接到 MQTT 服务器
 	if token := client.Connect(); token.Wait() && token.Error() != nil {
-		global.Logger.Error("连接到 MQTT 服务器失败", zap.Error(token.Error()))
+		global.SugarLogger.Error("连接到 MQTT 服务器失败", zap.Error(token.Error()))
 		return
 	}
 
 	// 订阅主题
 	if token := client.Subscribe(topic, byte(qos), nil); token.Wait() && token.Error() != nil {
-		global.Logger.Error("订阅主题失败", zap.Error(token.Error()))
+		global.SugarLogger.Error("订阅主题失败", zap.Error(token.Error()))
 		return
 	}
 
-	global.Logger.Info("已连接到 MQTT 服务器,订阅主题: " + topic)
+	global.SugarLogger.Info("已连接到 MQTT 服务器,订阅主题: " + topic)
 	// 持续监听消息
 	for {
 		time.Sleep(time.Second)

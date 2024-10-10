@@ -33,7 +33,6 @@ func registerServer(section *ini.Section) {
 		}
 	case "test":
 		fmt.Println(section.Name(), "test")
-
 	default:
 		fmt.Println(section.Name(), section.Key("struct").String())
 	}
@@ -43,7 +42,7 @@ func registerServer(section *ini.Section) {
 func run(topic model.Topic) error {
 	err := topic.Verify()
 	if err != nil {
-		global.Logger.Error(err.Error())
+		global.SugarLogger.Error(err.Error())
 		return err
 	}
 	go topic.ConnectMqtt()

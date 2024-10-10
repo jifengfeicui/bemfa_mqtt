@@ -2,13 +2,17 @@ package global
 
 import (
 	"github.com/go-ini/ini"
+	"go.uber.org/zap"
 	"log"
 )
 
-var Cfg *ini.File
-var BemfaBroker string
-var BemfaPort string
-var Bemfa_client_id string
+var (
+	Cfg             *ini.File
+	BemfaBroker     string
+	BemfaPort       string
+	Bemfa_client_id string
+	SugarLogger     *zap.SugaredLogger
+)
 
 func init() {
 	var err error
