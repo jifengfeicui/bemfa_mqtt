@@ -31,7 +31,7 @@
 
 4. 在小爱训练-->个人训练-->添加，设置如下：
 
-   <img src=".\picture.jpg" alt="截图" style="zoom:30%;" />
+   <img src=".\picture.jpg" alt="截图" style="zoom:15%;" />
 
 ## [配置文件示例]
 
@@ -70,41 +70,20 @@ struct = wol
    - Resume On LAN
 
 2. 进入系统，按 Win+R 打开运行，输入 `devmgmt.msc` 打开设备管理器：
-
-   ![img](https://doc.natfrp.com/assets/wol-1-998d1bd1.png)
-
 3. 找到要用作 WOL 的网卡，双击打开网卡配置界面：
-
-   ![img](https://doc.natfrp.com/assets/wol-2-cbaf0503.png)
-
    ::: info 不同网卡配置方式可能不一样，如果遇到配置困难请借助百度解决 :::
-
 4. 点击 **高级**，找到 **唤醒模式匹配** 和 **唤醒魔包**，设置为 `启用`：
-
-   ![img](https://doc.natfrp.com/assets/wol-3-690d24a1.png)
-
 5. 点击 **电源管理**，找到 **允许此设备唤醒计算机**，勾上前面的复选框：
-
    提示
-
    下面的 **只允许幻数据包唤醒计算机** 建议也勾上，可以避免部分情况下计算机无故开机
-
-   ![img](https://doc.natfrp.com/assets/wol-4-e1910907.png)
-
 6. 如果计算机开启了快速启动，建议关闭快速启动，否则可能造成无法正常唤醒。
-
 ## [远程关机WOL配置]
-
 目前仅支持linux,需要提前安装samba-common-bin
-
 ```
 apt install samba-common-bin
 ```
-
 ###  **启用远程关机权限**
-
 你可能还需要为远程用户启用远程关机的权限：
-
 1. 在 Windows 目标计算机上，按下 `Win + R`，输入 `secpol.msc` 并回车。
 2. 导航到 "本地策略" -> "用户权限分配"。
 3. 找到 "从远程系统强制关机" 选项，并确保 `test` 用户或 Administrators 组在列表中。
