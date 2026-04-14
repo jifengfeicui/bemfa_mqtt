@@ -1,0 +1,14 @@
+[DEFAULT]
+bemfa_broker = bemfa.com
+bemfa_port = 9501
+bemfa_client_id = xxxxxxxxxx
+
+
+[pc001]
+broadcast = 192.168.x.255
+mac = xx:xx:xx:xx:xx:xx
+struct = wol
+ip = 192.168.xx.xx
+user = xx
+password =
+
