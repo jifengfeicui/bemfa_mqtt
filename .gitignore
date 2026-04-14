@@ -1,2 +1,14 @@
+# Binaries
+bafa.exe
+
+# Config
 config.ini
-/.idea
+.taskenv
+# IDE
+.idea/
+
+# Logs
+*.log
+
+# OS
+.DS_Store

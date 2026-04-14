@@ -27,7 +27,14 @@ func (w WolTopic) MessageHandler(_ mqtt.Client, msg mqtt.Message) {
 		user := w.Parameter.Key("user").String()
 		password := w.Parameter.Key("password").String()
 		if runtime.GOOS == "windows" {
-			global.SugarLogger.Error("暂不支持")
+			sshHost := w.Parameter.Key("ssh_host").String()
+			sshPort := w.Parameter.Key("ssh_port").MustString("22")
+			sshUser := w.Parameter.Key("ssh_user").String()
+			sshPassword := w.Parameter.Key("ssh_password").String()
+			err := util.SSHCommand(sshHost, sshPort, sshUser, sshPassword, "shutdown /s /t 0")
+			if err != nil {
+				global.SugarLogger.Error("SSH关机失败: " + err.Error())
+			}
 		} else if runtime.GOOS == "linux" {
 			cmd := fmt.Sprintf("net rpc shutdown -I %s -U %s%%%s", ip, user, password)
 			global.SugarLogger.Info(cmd)

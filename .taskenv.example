@@ -1,0 +1,8 @@
+# 复制此文件为 .taskenv 并填入真实值
+# .taskenv 不会被提交到 git
+
+SERVER_HOST=192.168.8.195
+SERVER_PORT=22
+SERVER_USER=test
+SERVER_PASSWORD=your_password_here
+REMOTE_PATH=/home/test/bafa
