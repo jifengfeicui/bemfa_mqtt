@@ -1,0 +1,33 @@
+version: '3'
+
+vars:
+  SERVER_HOST: ${SERVER_HOST}
+  SERVER_PORT: ${SERVER_PORT:-22}
+  SERVER_USER: ${SERVER_USER}
+  SERVER_PASSWORD: ${SERVER_PASSWORD}
+  REMOTE_PATH: ${REMOTE_PATH:-/opt/bafa}
+  LINUX_BINARY: bafa
+
+tasks:
+  build:
+    desc: 编译 Windows 版本
+    cmds:
+      - go build -o bafa.exe
+
+  build:linux:
+    desc: 编译 Linux amd64 版本
+    cmds:
+      - GOOS=linux GOARCH=amd64 go build -o {{.LINUX_BINARY}}
+
+  deploy:
+    desc: 部署到服务器 {{.SERVER_HOST}}
+    cmds:
+      - scp -o StrictHostKeyChecking=no -P {{.SERVER_PORT}} {{.LINUX_BINARY}} {{.SERVER_USER}}@{{.SERVER_HOST}}:{{.REMOTE_PATH}}/
+      - scp -o StrictHostKeyChecking=no -P {{.SERVER_PORT}} supervisor/bafa.conf {{.SERVER_USER}}@{{.SERVER_HOST}}:{{.REMOTE_PATH}}/
+      - ssh -o StrictHostKeyChecking=no -p {{.SERVER_PORT}} {{.SERVER_USER}}@{{.SERVER_HOST}} "sudo cp {{.REMOTE_PATH}}/bafa.conf /etc/supervisor/conf.d/ && sudo supervisorctl reread && sudo supervisorctl update && sudo supervisorctl start bafa"
+    deps: [build:linux]
+
+  d:
+    desc: 一键部署 Linux 版本到服务器 (默认)
+    cmds:
+      - task: deploy
