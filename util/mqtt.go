@@ -4,7 +4,6 @@ import (
 	"bafa/global"
 	"fmt"
 	"go.uber.org/zap"
-	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 )
@@ -22,7 +21,12 @@ func ConnectMqtt(topic string, messageHandler func(client mqtt.Client, msg mqtt.
 	opts.AddBroker(brokerURL)
 	opts.SetClientID(clientID)
 	opts.SetCleanSession(false)
-	opts.SetDefaultPublishHandler(messageHandler) // 设置消息处理函数
+	opts.SetDefaultPublishHandler(messageHandler)
+	opts.SetAutoReconnect(true)
+	opts.SetConnectRetry(true)
+	opts.SetConnectionLostHandler(func(c mqtt.Client, err error) {
+		global.SugarLogger.Error("MQTT 连接断开: ", zap.Error(err))
+	})
 
 	client := mqtt.NewClient(opts)
 
@@ -39,8 +43,5 @@ func ConnectMqtt(topic string, messageHandler func(client mqtt.Client, msg mqtt.
 	}
 
 	global.SugarLogger.Info("已连接到 MQTT 服务器,订阅主题: " + topic)
-	// 持续监听消息
-	for {
-		time.Sleep(time.Second)
-	}
+	<-make(chan int)
 }
