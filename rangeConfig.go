@@ -31,6 +31,16 @@ func registerServer(section *ini.Section) {
 				break
 			}
 		}
+	case "screen_rotate":
+		{
+			topic := model.ScreenRotateTopic{
+				TopicName: section.Name(),
+				Parameter: section,
+			}
+			if run(topic) != nil {
+				break
+			}
+		}
 	case "test":
 		fmt.Println(section.Name(), "test")
 	default:

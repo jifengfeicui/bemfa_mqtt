@@ -1,88 +1,101 @@
-## [功能]
+# bemfa_mqtt
 
-使用小爱同学做电脑WOL远程唤醒，通过巴法云MQTT接入
+通过巴法云 MQTT 接入米家/小爱，用 Ubuntu 上的程序控制 Windows 电脑：
 
-## [使用]
+- `pc001`：WOL 远程唤醒
+- `screen006`：006 开关，`on` 旋转屏幕到 90 度，`off` 恢复到 0 度
 
-1. 注册巴法云账号https://cloud.bemfa.com/，并获取密钥
+## 部署文件
 
-2. 新建MQTT主题，例：ethanpc001
-   注意：[主题名称的后三位必须是001-009](https://cloud.bemfa.com/docs/#/?id=p-stylefont-weight700margin0px11%e3%80%81%e7%b1%b3%e5%ae%b6%e5%b0%8f%e7%88%b1%e6%94%af%e6%8c%81)，前面随意，不同的编号在米家代表不同的设备。
+Ubuntu 上部署同一目录放这几个文件：
 
-   > 当主题名字后三位是001时为插座设备。
-
-   > 当主题名字后三位是002时为灯泡设备。
-
-   > 当主题名字后三位是003时为风扇设备。
-
-   > 当主题名字后三位是004时为传感器设备。
-
-   > 当主题名字后三位是005时为空调设备。
-
-   > 当主题名字后三位是006时为开关设备。
-
-   > 当主题名字后三位是009时为窗帘设备。
-
-   
-
-3. 在智能音箱App中添加巴法云设备:
-
-   - 小爱同学: 在米家app-->我的-->其他平台设备-->点击添加-->找到"巴法"，输入巴法云账号即可，设备会自动同步到米家。
-
-4. 在小爱训练-->个人训练-->添加
-
-
-## [配置文件示例]
-
+```text
+wol
+config.ini
+tmp/rotatescreen.ps1
 ```
+
+启动：
+
+```bash
+chmod +x wol
+./wol
+```
+
+程序启动时从当前目录读取 `config.ini`，日志写到 `stdout.log`。
+
+## 巴法云配置
+
+1. 注册巴法云账号并获取私钥：`bemfa_client_id`
+2. 创建 MQTT 主题：
+   - WOL 唤醒可用 `pc001`
+   - 屏幕旋转用 `screen006`
+3. 在米家 App 中添加巴法云设备。
+
+主题后三位代表设备类型，`006` 是开关，所以屏幕旋转用 `screen006`。
+
+## config.ini 示例
+
+```ini
 [DEFAULT]
 bemfa_broker = bemfa.com
 bemfa_port = 9501
-# 巴法平台控制台获取的私钥
-bemfa_client_id = xxxxxxxx
+bemfa_client_id = xxxxxxxxxx
 
-# 巴法云主题名称 例:ethanpc001
-[ethanpc001]
-# 广播地址
-broadcast = 192.168.x.255 
-# 设备mac地址
-mac = xx:xx:xx:xx:xx:xx
+[pc001]
 struct = wol
+broadcast = 192.168.x.255
+mac = xx:xx:xx:xx:xx:xx
+ip = 192.168.xx.xx
+user = xx
+password =
 
-
-
-
-
+[screen006]
+struct = screen_rotate
+ssh_host = 192.168.x.x
+ssh_port = 22
+ssh_user = user
+ssh_password = password
+display = 2
+script = tmp/rotatescreen.ps1
 ```
 
+## 屏幕旋转
 
+`screen006` 收到巴法云消息后通过 SSH 远程执行 Windows PowerShell：
 
-## [远程唤醒 WOL配置]
+- `on`：旋转到 90 度
+- `off`：旋转到 0 度
 
-1. 首先到 BIOS 中打开 WOL 相关开关
+Windows 电脑需要开启 OpenSSH Server，`ssh_user` 对应账号需要能执行 PowerShell。
 
-   通常 WOL 相关设置会有下面的名称（仅供参考，以主板用户手册为准）：
+配置项：
 
-   - Wake up on LAN
-   - Wake-on-LAN from S4/S5
-   - Power on by PCIe devices
-   - Resume On LAN
+- `ssh_host`：Windows 电脑 IP
+- `ssh_port`：SSH 端口，默认 `22`
+- `ssh_user`：Windows SSH 用户名
+- `ssh_password`：Windows SSH 密码
+- `display`：屏幕编号，默认 `2`，对应 `\\.\DISPLAY2`
+- `script`：本机脚本路径，默认 `tmp/rotatescreen.ps1`
 
-2. 进入系统，按 Win+R 打开运行，输入 `devmgmt.msc` 打开设备管理器：
-3. 找到要用作 WOL 的网卡，双击打开网卡配置界面：
-   ::: info 不同网卡配置方式可能不一样，如果遇到配置困难请借助百度解决 :::
-4. 点击 **高级**，找到 **唤醒模式匹配** 和 **唤醒魔包**，设置为 `启用`：
-5. 点击 **电源管理**，找到 **允许此设备唤醒计算机**，勾上前面的复选框：
-   提示
-   下面的 **只允许幻数据包唤醒计算机** 建议也勾上，可以避免部分情况下计算机无故开机
-6. 如果计算机开启了快速启动，建议关闭快速启动，否则可能造成无法正常唤醒。
-## [远程关机WOL配置]
-目前仅支持linux,需要提前安装samba-common-bin
+## WOL 唤醒
+
+WOL 需要在 BIOS 和网卡驱动中打开相关选项：
+
+- Wake on LAN
+- Wake-on-LAN from S4/S5
+- Power on by PCIe devices
+- 允许此设备唤醒计算机
+- 唤醒魔包
+
+如果 Windows 开启了快速启动，建议关闭，否则可能影响关机后的 WOL 唤醒。
+
+## 远程关机
+
+Linux 下远程关机依赖 `net rpc shutdown`：
+
+```bash
+sudo apt install samba-common-bin
 ```
-apt install samba-common-bin
-```
-###  **启用远程关机权限**
-你可能还需要为远程用户启用远程关机的权限：
-1. 在 Windows 目标计算机上，按下 `Win + R`，输入 `secpol.msc` 并回车。
-2. 导航到 "本地策略" -> "用户权限分配"。
-3. 找到 "从远程系统强制关机" 选项，并确保 `test` 用户或 Administrators 组在列表中。
+
+Windows 目标机还需要给对应用户开启“从远程系统强制关机”权限。

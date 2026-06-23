@@ -12,3 +12,11 @@ ip = 192.168.xx.xx
 user = xx
 password =
 
+[screen006]
+struct = screen_rotate
+ssh_host = 192.168.x.x
+ssh_port = 22
+ssh_user = user
+ssh_password = password
+display = 2
+script = tmp/rotatescreen.ps1
